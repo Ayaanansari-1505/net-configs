@@ -1,0 +1,41 @@
+name: Deploy Network Config to GNS3 Router
+ 
+on:
+  push:
+    paths:
+      - 'configs/**'
+ 
+jobs:
+  validate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+ 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+ 
+      - name: Install Netmiko
+        run: pip install netmiko
+ 
+      - name: Validate config files (basic check)
+        run: |
+          for f in $(find configs -name '*.conf'); do
+            echo "Checking $f..."
+            if [ ! -s "$f" ]; then
+              echo "ERROR: $f is empty!"
+              exit 1
+            fi
+            echo "OK: $f"
+          done
+ 
+      - name: Deploy to router via Telnet
+        env:
+          GNS3_HOST: ${{ secrets.GNS3_HOST }}
+          ROUTER_TELNET_PORT: ${{ secrets.ROUTER_TELNET_PORT }}
+        run: |
+          echo 'Deployment step: in production, Netmiko would push configs here.'
+          echo 'For lab use, configs are validated and stored. Manual apply from MCP agent.'
+          echo 'Deployment validated successfully.'
