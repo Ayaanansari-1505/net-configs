@@ -19,7 +19,6 @@ That matters because the API surface differs by OS:
 |---|---|---|---|
 | FortiSwitch FS-124F (standalone) | FortiSwitchOS | `https://<switch>/api/v2/...` | Covered in detail below |
 | FortiSwitch FS-124F (FortiLink-managed) | via FortiGate | FortiGate `/api/v2/monitor/switch-controller/...` | The FortiGate proxies switch telemetry |
-| A FortiGate (40F/60F/100F…) at the site | FortiOS | `https://<fgt>/api/v2/...` | See Appendix A |
 
 "Standalone" = the switch is **not** managed by a FortiGate over FortiLink, so there is no
 built-in central pane of glass — which is exactly why a custom dashboard is needed.
@@ -245,30 +244,6 @@ vendor-UI-independent, which is what was asked.
 
 ---
 
-## Appendix A — If a site device is actually a FortiGate (FortiOS)
-
-Same auth patterns (Bearer token from a REST API admin profile is standard on FortiOS).
-Dashboard-relevant FortiOS endpoints (also included as a folder in the Postman collection):
-
-| Purpose | Path |
-|---|---|
-| Status / uptime / version | `GET /api/v2/monitor/system/status` |
-| CPU/mem/sessions time-series | `GET /api/v2/monitor/system/resource/usage?interval=1-min` |
-| Interfaces + counters | `GET /api/v2/monitor/system/interface?include_vlan=true` |
-| License / FortiGuard state | `GET /api/v2/monitor/license/status` |
-| IPsec VPN tunnels | `GET /api/v2/monitor/vpn/ipsec` |
-| SSL-VPN sessions | `GET /api/v2/monitor/vpn/ssl` |
-| SD-WAN health checks | `GET /api/v2/monitor/virtual-wan/health-check` |
-| Firewall policy hit counts | `GET /api/v2/monitor/firewall/policy` |
-| Managed FortiSwitches (FortiLink) | `GET /api/v2/monitor/switch-controller/managed-switch?poe=true&port_stats=true` |
-| HA status | `GET /api/v2/monitor/system/ha-statistics` |
-
-FortiGate SNMP: `FORTINET-FORTIGATE-MIB` under `1.3.6.1.4.1.12356.101`
-(`fgSysCpuUsage` `.101.4.1.3.0`, `fgSysMemUsage` `.101.4.1.4.0` — here memory **is** a %,
-`fgSysSesCount` `.101.4.1.8.0`), plus the same IF-MIB tables.
-
----
-
 ## Sources
 
 - [Using APIs — FortiOS 7.4 Administration Guide](https://docs.fortinet.com/document/fortigate/7.4.0/administration-guide/940602/using-apis)
@@ -278,6 +253,4 @@ FortiGate SNMP: `FORTINET-FORTIGATE-MIB` under `1.3.6.1.4.1.12356.101`
 - [Technical Tip: About REST API — Fortinet Community (logincheck/APSCOOKIE/ccsrftoken flow)](https://community.fortinet.com/t5/FortiGate/Technical-Tip-About-REST-API/ta-p/195425)
 - [fortiswitch_monitor_fact — fortinet.fortiswitch Ansible collection (monitor selectors)](https://ansible-galaxy-fortiswitch-docs.readthedocs.io/en/latest/fortiswitch_monitor_fact.html)
 - [FORTINET-FORTISWITCH-MIB (1.3.6.1.4.1.12356.106) — Observium MIB browser](https://mibs.observium.org/mib/FORTINET-FORTISWITCH-MIB/)
-- [FORTINET-FORTIGATE-MIB fgSysCpuUsage (1.3.6.1.4.1.12356.101.4.1.3)](http://oidref.com/1.3.6.1.4.1.12356.101.4.1.3)
-- [Generate an API token for FortiOS — fortinetdev Terraform guide](https://registry.terraform.io/providers/fortinetdev/fortios/latest/docs/guides/fgt_token)
 - [Monitor FortiSwitches in FortiLink mode using the FortiOS REST API — Auvik](https://support.auvik.com/hc/en-us/articles/360056175532-How-do-I-monitor-a-FortiSwitch-in-FortiLink-mode)

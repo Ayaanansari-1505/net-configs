@@ -1,25 +1,49 @@
 {
   "info": {
     "name": "Fortinet FS-124F Standalone Monitoring",
-    "description": "Monitoring/read-only API surface for standalone FortiSwitch FS-124F (FortiSwitchOS) sites, feeding a centralised custom dashboard. Includes a FortiGate (FortiOS) folder for sites fronted by a FortiGate.\n\n## Authentication — pick ONE of two modes\n\n**A) API token (FortiSwitchOS 7.x REST API admin — preferred).** Set the `api_token` variable in your environment. The collection-level auth sends `Authorization: Bearer {{api_token}}` on every request. Skip the `0 · Auth — Session login` folder entirely.\n\n**B) Session login (works on all builds).** If your build has no REST API admin: set collection auth to `No Auth`, set `username`/`password` in the environment, run `Login (POST /logincheck)` once — Postman stores the APSCOOKIE session cookie automatically and the `ccsrftoken` value is saved to the `csrf_token` variable (needed only for write requests via the `X-CSRFTOKEN` header). Run `Logout` when finished; FortiSwitch limits concurrent admin sessions.\n\n## TLS\nSwitches ship with self-signed certs. For lab use disable 'SSL certificate verification' in Postman settings (File → Settings → General), or add the device cert under Settings → Certificates for production hygiene.\n\n## Conventions\nAll monitor endpoints are GET and safe to poll. Typical response envelope: `{\"http_method\":\"GET\",\"results\":[...],\"status\":\"success\",\"serial\":\"S124F...\",\"version\":\"v7.x.x\"}`. Port-scoped monitors accept `?port-name=portN`. Exact endpoint availability varies slightly per FortiSwitchOS train.",
+    "description": "Monitoring/read-only API surface for standalone FortiSwitch FS-124F (FortiSwitchOS) sites, feeding a centralised custom dashboard.\n\n## Authentication \u2014 pick ONE of two modes\n\n**A) API token (FortiSwitchOS 7.x REST API admin \u2014 preferred).** Set the `api_token` variable in your environment. The collection-level auth sends `Authorization: Bearer {{api_token}}` on every request. Skip the `0 \u00b7 Auth \u2014 Session login` folder entirely.\n\n**B) Session login (works on all builds).** If your build has no REST API admin: set collection auth to `No Auth`, set `username`/`password` in the environment, run `Login (POST /logincheck)` once \u2014 Postman stores the APSCOOKIE session cookie automatically and the `ccsrftoken` value is saved to the `csrf_token` variable (needed only for write requests via the `X-CSRFTOKEN` header). Run `Logout` when finished; FortiSwitch limits concurrent admin sessions.\n\n## TLS\nSwitches ship with self-signed certs. For lab use disable 'SSL certificate verification' in Postman settings (File \u2192 Settings \u2192 General), or add the device cert under Settings \u2192 Certificates for production hygiene.\n\n## Conventions\nAll monitor endpoints are GET and safe to poll. Typical response envelope: `{\"http_method\":\"GET\",\"results\":[...],\"status\":\"success\",\"serial\":\"S124F...\",\"version\":\"v7.x.x\"}`. Port-scoped monitors accept `?port-name=portN`. Exact endpoint availability varies slightly per FortiSwitchOS train.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
     "type": "bearer",
-    "bearer": [{ "key": "token", "value": "{{api_token}}", "type": "string" }]
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_token}}",
+        "type": "string"
+      }
+    ]
   },
   "variable": [
-    { "key": "base_url", "value": "https://192.0.2.10", "description": "Switch mgmt IP/FQDN, no trailing slash" },
-    { "key": "api_token", "value": "", "description": "REST API admin token (auth mode A)" },
-    { "key": "username", "value": "api-ro", "description": "Read-only admin (auth mode B)" },
-    { "key": "password", "value": "", "description": "Password for auth mode B" },
-    { "key": "csrf_token", "value": "", "description": "Auto-filled by the Login request" },
-    { "key": "fgt_base_url", "value": "https://192.0.2.1", "description": "FortiGate mgmt URL (Appendix folder only)" },
-    { "key": "fgt_api_token", "value": "", "description": "FortiGate REST API admin token" }
+    {
+      "key": "base_url",
+      "value": "https://192.0.2.10",
+      "description": "Switch mgmt IP/FQDN, no trailing slash"
+    },
+    {
+      "key": "api_token",
+      "value": "",
+      "description": "REST API admin token (auth mode A)"
+    },
+    {
+      "key": "username",
+      "value": "api-ro",
+      "description": "Read-only admin (auth mode B)"
+    },
+    {
+      "key": "password",
+      "value": "",
+      "description": "Password for auth mode B"
+    },
+    {
+      "key": "csrf_token",
+      "value": "",
+      "description": "Auto-filled by the Login request"
+    }
   ],
   "item": [
     {
-      "name": "0 · Auth — Session login (only if no API token)",
+      "name": "0 \u00b7 Auth \u2014 Session login (only if no API token)",
       "item": [
         {
           "name": "Login (POST /logincheck)",
@@ -38,95 +62,283 @@
                   "    pm.collectionVariables.set('csrf_token', token);",
                   "    console.log('csrf_token saved for X-CSRFTOKEN header (writes only)');",
                   "} else {",
-                  "    console.warn('ccsrftoken cookie not visible to script — GETs still work via session cookie; for writes copy it manually from the cookie jar');",
+                  "    console.warn('ccsrftoken cookie not visible to script \u2014 GETs still work via session cookie; for writes copy it manually from the cookie jar');",
                   "}"
                 ]
               }
             }
           ],
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [],
             "body": {
               "mode": "urlencoded",
               "urlencoded": [
-                { "key": "username", "value": "{{username}}" },
-                { "key": "secretkey", "value": "{{password}}" },
-                { "key": "ajax", "value": "1" }
+                {
+                  "key": "username",
+                  "value": "{{username}}"
+                },
+                {
+                  "key": "secretkey",
+                  "value": "{{password}}"
+                },
+                {
+                  "key": "ajax",
+                  "value": "1"
+                }
               ]
             },
-            "url": { "raw": "{{base_url}}/logincheck", "host": ["{{base_url}}"], "path": ["logincheck"] },
+            "url": {
+              "raw": "{{base_url}}/logincheck",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logincheck"
+              ]
+            },
             "description": "Form-encoded login. On success the device sets the APSCOOKIE_* session cookie (Postman keeps it automatically) and a ccsrftoken cookie. GET requests need only the session cookie; POST/PUT/DELETE also need header `X-CSRFTOKEN: {{csrf_token}}`."
           }
         },
         {
           "name": "Logout (POST /logout)",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [],
-            "url": { "raw": "{{base_url}}/logout", "host": ["{{base_url}}"], "path": ["logout"] },
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            },
             "description": "End the admin session. FortiSwitchOS has a concurrent-session limit; poller code must always log out."
           }
         }
       ]
     },
     {
-      "name": "1 · System health",
+      "name": "1 \u00b7 System health",
       "item": [
         {
           "name": "System status (model / serial / version / uptime)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/status", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "status"] }, "description": "Primary fleet-inventory poll: hostname, model (FS-124F…), serial, FortiSwitchOS version/build, uptime. Poll every 60s; uptime reset ⇒ reboot alert." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "status"
+              ]
+            },
+            "description": "Primary fleet-inventory poll: hostname, model (FS-124F\u2026), serial, FortiSwitchOS version/build, uptime. Poll every 60s; uptime reset \u21d2 reboot alert."
+          }
         },
         {
           "name": "Performance summary",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/performance-status", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "performance-status"] }, "description": "One-shot CPU/memory snapshot equivalent to `get system performance status`." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/performance-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "performance-status"
+              ]
+            },
+            "description": "One-shot CPU/memory snapshot equivalent to `get system performance status`."
+          }
         },
         {
           "name": "CPU detail",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/hardware/cpu", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "hardware", "cpu"] }, "description": "Per-core user/system/idle. Dashboard series: 100 - idle." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/hardware/cpu",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "hardware",
+                "cpu"
+              ]
+            },
+            "description": "Per-core user/system/idle. Dashboard series: 100 - idle."
+          }
         },
         {
           "name": "Memory detail",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/hardware/memory", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "hardware", "memory"] }, "description": "Total/used/free KB. Compute used% centrally (mirrors SNMP fsSysMemUsage being KB not %)." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/hardware/memory",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "hardware",
+                "memory"
+              ]
+            },
+            "description": "Total/used/free KB. Compute used% centrally (mirrors SNMP fsSysMemUsage being KB not %)."
+          }
         },
         {
           "name": "Fan status",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/fan-status", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "fan-status"] }, "description": "Fan RPM/health. Alert on any non-OK." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/fan-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "fan-status"
+              ]
+            },
+            "description": "Fan RPM/health. Alert on any non-OK."
+          }
         },
         {
           "name": "PSU status",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/psu-status", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "psu-status"] }, "description": "Power supply health." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/psu-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "psu-status"
+              ]
+            },
+            "description": "Power supply health."
+          }
         },
         {
           "name": "Board temperature (pcb-temp)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/pcb-temp", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "pcb-temp"] }, "description": "PCB temperature sensors — early warning for hot comms cupboards at branch sites." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/pcb-temp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "pcb-temp"
+              ]
+            },
+            "description": "PCB temperature sensors \u2014 early warning for hot comms cupboards at branch sites."
+          }
         },
         {
           "name": "NTP status",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/ntp-status", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "ntp-status"] }, "description": "Clock sync state — unsynced clocks break log correlation across sites." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/ntp-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "ntp-status"
+              ]
+            },
+            "description": "Clock sync state \u2014 unsynced clocks break log correlation across sites."
+          }
         },
         {
           "name": "Upgrade status",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/upgrade-status", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "upgrade-status"] }, "description": "Firmware upgrade progress/result — useful during fleet upgrade campaigns." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/upgrade-status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "upgrade-status"
+              ]
+            },
+            "description": "Firmware upgrade progress/result \u2014 useful during fleet upgrade campaigns."
+          }
         }
       ]
     },
     {
-      "name": "2 · Ports, PoE & optics",
+      "name": "2 \u00b7 Ports, PoE & optics",
       "item": [
         {
-          "name": "All ports — link state, speed & counters",
+          "name": "All ports \u2014 link state, speed & counters",
           "request": {
             "method": "GET",
             "url": {
               "raw": "{{base_url}}/api/v2/monitor/switch/port",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v2", "monitor", "switch", "port"],
-              "query": [{ "key": "port-name", "value": "port1", "disabled": true, "description": "Optional: scope to one port" }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "port"
+              ],
+              "query": [
+                {
+                  "key": "port-name",
+                  "value": "port1",
+                  "disabled": true,
+                  "description": "Optional: scope to one port"
+                }
+              ]
             },
-            "description": "THE core dashboard poll: per-port admin/oper status, speed/duplex, and tx/rx byte-, packet- and error-counters for all 24×GE + 4×SFP+ ports. Counters are cumulative — derive rates centrally (delta/interval), like SNMP ifHCInOctets."
+            "description": "THE core dashboard poll: per-port admin/oper status, speed/duplex, and tx/rx byte-, packet- and error-counters for all 24\u00d7GE + 4\u00d7SFP+ ports. Counters are cumulative \u2014 derive rates centrally (delta/interval), like SNMP ifHCInOctets."
           }
         },
         {
@@ -135,161 +347,376 @@
             "method": "GET",
             "url": {
               "raw": "{{base_url}}/api/v2/monitor/switch/poe-status",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v2", "monitor", "switch", "poe-status"],
-              "query": [{ "key": "port-name", "value": "port1", "disabled": true }]
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "poe-status"
+              ],
+              "query": [
+                {
+                  "key": "port-name",
+                  "value": "port1",
+                  "disabled": true
+                }
+              ]
             },
-            "description": "Per-port PoE state and power draw (W) — richer than POWER-ETHERNET-MIB. Dashboard: PoE budget used vs total per site; alert on APs/cameras dropping power."
+            "description": "Per-port PoE state and power draw (W) \u2014 richer than POWER-ETHERNET-MIB. Dashboard: PoE budget used vs total per site; alert on APs/cameras dropping power."
           }
         },
         {
           "name": "Trunk / LAG state",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/trunk-state", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "trunk-state"] }, "description": "LACP aggregate member state — alert when a LAG runs degraded." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/trunk-state",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "trunk-state"
+              ]
+            },
+            "description": "LACP aggregate member state \u2014 alert when a LAG runs degraded."
+          }
         },
         {
           "name": "STP state",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/stp-state", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "stp-state"] }, "description": "Per-port/per-instance STP role & state; alert on topology-change storms (loops at branch sites)." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/stp-state",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "stp-state"
+              ]
+            },
+            "description": "Per-port/per-instance STP role & state; alert on topology-change storms (loops at branch sites)."
+          }
         },
         {
           "name": "Loop-guard state",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/loop-guard-state", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "loop-guard-state"] }, "description": "Ports shut down by loop guard — a top cause of 'site partially down' tickets." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/loop-guard-state",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "loop-guard-state"
+              ]
+            },
+            "description": "Ports shut down by loop guard \u2014 a top cause of 'site partially down' tickets."
+          }
         },
         {
-          "name": "SFP modules — summary",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/modules-summary", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "modules-summary"] }, "description": "Installed SFP/SFP+ inventory (vendor, type, serial) on the 4 uplink cages." }
+          "name": "SFP modules \u2014 summary",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/modules-summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "modules-summary"
+              ]
+            },
+            "description": "Installed SFP/SFP+ inventory (vendor, type, serial) on the 4 uplink cages."
+          }
         },
         {
-          "name": "SFP modules — DOM detail (rx/tx power)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/modules-detail", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "modules-detail"] }, "description": "Digital optical monitoring: temperature, vcc, tx-bias, tx/rx power (dBm). Not available via SNMP — REST-only win. Trend rx power to catch dying fibre uplinks before they fail." }
+          "name": "SFP modules \u2014 DOM detail (rx/tx power)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/modules-detail",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "modules-detail"
+              ]
+            },
+            "description": "Digital optical monitoring: temperature, vcc, tx-bias, tx/rx power (dBm). Not available via SNMP \u2014 REST-only win. Trend rx power to catch dying fibre uplinks before they fail."
+          }
         }
       ]
     },
     {
-      "name": "3 · L2/L3 visibility",
+      "name": "3 \u00b7 L2/L3 visibility",
       "item": [
         {
           "name": "MAC address table",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/mac-address", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "mac-address"] }, "description": "Learned MACs per port/VLAN. Central use: 'find this device across all sites' search, and per-port client counts. Poll ~5 min." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/mac-address",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "mac-address"
+              ]
+            },
+            "description": "Learned MACs per port/VLAN. Central use: 'find this device across all sites' search, and per-port client counts. Poll ~5 min."
+          }
         },
         {
           "name": "LLDP neighbours",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/lldp-state", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "lldp-state"] }, "description": "Neighbour device/port per interface — auto-builds the per-site topology map on the dashboard." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/lldp-state",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "lldp-state"
+              ]
+            },
+            "description": "Neighbour device/port per interface \u2014 auto-builds the per-site topology map on the dashboard."
+          }
         },
         {
           "name": "IGMP snooping groups",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/igmp-snooping-group", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "igmp-snooping-group"] }, "description": "Active multicast groups/receivers (relevant for AV/paging/IPTV at sites)." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/igmp-snooping-group",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "igmp-snooping-group"
+              ]
+            },
+            "description": "Active multicast groups/receivers (relevant for AV/paging/IPTV at sites)."
+          }
         },
         {
           "name": "DHCP snooping bindings",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/switch/dhcp-snooping-db", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "switch", "dhcp-snooping-db"] }, "description": "MAC↔IP↔port bindings when DHCP snooping is enabled — enriches the device-search view with IPs." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/switch/dhcp-snooping-db",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "switch",
+                "dhcp-snooping-db"
+              ]
+            },
+            "description": "MAC\u2194IP\u2194port bindings when DHCP snooping is enabled \u2014 enriches the device-search view with IPs."
+          }
         },
         {
           "name": "Routing table (L3/SVI)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/router/routing-table", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "router", "routing-table"] }, "description": "Active routes if the switch does inter-VLAN routing." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/router/routing-table",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "router",
+                "routing-table"
+              ]
+            },
+            "description": "Active routes if the switch does inter-VLAN routing."
+          }
         },
         {
           "name": "Physical interface IPs",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/monitor/system/interface-physical", "host": ["{{base_url}}"], "path": ["api", "v2", "monitor", "system", "interface-physical"] }, "description": "Mgmt/SVI interface addressing as seen live." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/monitor/system/interface-physical",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "monitor",
+                "system",
+                "interface-physical"
+              ]
+            },
+            "description": "Mgmt/SVI interface addressing as seen live."
+          }
         }
       ]
     },
     {
-      "name": "4 · Config audit (CMDB, read-only)",
+      "name": "4 \u00b7 Config audit (CMDB, read-only)",
       "item": [
         {
           "name": "Global settings",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/cmdb/system/global", "host": ["{{base_url}}"], "path": ["api", "v2", "cmdb", "system", "global"] }, "description": "Hostname, admin timeouts, HTTPS port etc. Nightly snapshot ⇒ config-drift detection across the fleet." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/cmdb/system/global",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "cmdb",
+                "system",
+                "global"
+              ]
+            },
+            "description": "Hostname, admin timeouts, HTTPS port etc. Nightly snapshot \u21d2 config-drift detection across the fleet."
+          }
         },
         {
           "name": "Physical port config",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/cmdb/switch/physical-port", "host": ["{{base_url}}"], "path": ["api", "v2", "cmdb", "switch", "physical-port"] }, "description": "Configured (vs live) port settings: speed, description, status." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/cmdb/switch/physical-port",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "cmdb",
+                "switch",
+                "physical-port"
+              ]
+            },
+            "description": "Configured (vs live) port settings: speed, description, status."
+          }
         },
         {
           "name": "Switch interfaces (VLANs, security)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/cmdb/switch/interface", "host": ["{{base_url}}"], "path": ["api", "v2", "cmdb", "switch", "interface"] }, "description": "Native/allowed VLANs, port-security, STP/loop-guard admin state per interface." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/cmdb/switch/interface",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "cmdb",
+                "switch",
+                "interface"
+              ]
+            },
+            "description": "Native/allowed VLANs, port-security, STP/loop-guard admin state per interface."
+          }
         },
         {
           "name": "VLAN database",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/cmdb/switch/vlan", "host": ["{{base_url}}"], "path": ["api", "v2", "cmdb", "switch", "vlan"] }, "description": "VLAN IDs/names — verify VLAN standards hold at every site." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/cmdb/switch/vlan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "cmdb",
+                "switch",
+                "vlan"
+              ]
+            },
+            "description": "VLAN IDs/names \u2014 verify VLAN standards hold at every site."
+          }
         },
         {
           "name": "SNMP sysinfo",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/cmdb/system.snmp/sysinfo", "host": ["{{base_url}}"], "path": ["api", "v2", "cmdb", "system.snmp", "sysinfo"] }, "description": "Confirms SNMP agent settings that the SNMP poller relies on." }
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/api/v2/cmdb/system.snmp/sysinfo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "cmdb",
+                "system.snmp",
+                "sysinfo"
+              ]
+            },
+            "description": "Confirms SNMP agent settings that the SNMP poller relies on."
+          }
         },
         {
           "name": "Admin accounts (audit)",
-          "request": { "method": "GET", "url": { "raw": "{{base_url}}/api/v2/cmdb/system/admin", "host": ["{{base_url}}"], "path": ["api", "v2", "cmdb", "system", "admin"] }, "description": "Audit admin accounts/profiles per site (passwords are not returned)." }
-        }
-      ]
-    },
-    {
-      "name": "5 · FortiGate variant (FortiOS, if site has a FortiGate)",
-      "auth": {
-        "type": "bearer",
-        "bearer": [{ "key": "token", "value": "{{fgt_api_token}}", "type": "string" }]
-      },
-      "item": [
-        {
-          "name": "System status",
-          "request": { "method": "GET", "url": { "raw": "{{fgt_base_url}}/api/v2/monitor/system/status", "host": ["{{fgt_base_url}}"], "path": ["api", "v2", "monitor", "system", "status"] }, "description": "FortiOS: hostname, model, serial, version. Token from a FortiOS 'REST API Admin' (System → Administrators)." }
-        },
-        {
-          "name": "Resource usage (CPU/mem/sessions time-series)",
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{fgt_base_url}}/api/v2/monitor/system/resource/usage?interval=1-min",
-              "host": ["{{fgt_base_url}}"],
-              "path": ["api", "v2", "monitor", "system", "resource", "usage"],
-              "query": [{ "key": "interval", "value": "1-min", "description": "1-min | 10-min | 30-min | 1-hour | 12-hour | 24-hour" }]
-            },
-            "description": "Built-in short history of cpu, mem, sessions, setup rate — the FortiGate widget data source."
-          }
-        },
-        {
-          "name": "Interfaces + counters",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{fgt_base_url}}/api/v2/monitor/system/interface?include_vlan=true",
-              "host": ["{{fgt_base_url}}"],
-              "path": ["api", "v2", "monitor", "system", "interface"],
-              "query": [{ "key": "include_vlan", "value": "true" }]
-            },
-            "description": "Per-interface link state and byte/packet counters."
-          }
-        },
-        {
-          "name": "License / FortiGuard status",
-          "request": { "method": "GET", "url": { "raw": "{{fgt_base_url}}/api/v2/monitor/license/status", "host": ["{{fgt_base_url}}"], "path": ["api", "v2", "monitor", "license", "status"] }, "description": "Support/UTM contract expiry per site — great fleet-compliance widget." }
-        },
-        {
-          "name": "IPsec VPN tunnels",
-          "request": { "method": "GET", "url": { "raw": "{{fgt_base_url}}/api/v2/monitor/vpn/ipsec", "host": ["{{fgt_base_url}}"], "path": ["api", "v2", "monitor", "vpn", "ipsec"] }, "description": "Tunnel up/down + traffic — i.e. is the site's path to HQ healthy." }
-        },
-        {
-          "name": "SD-WAN health checks",
-          "request": { "method": "GET", "url": { "raw": "{{fgt_base_url}}/api/v2/monitor/virtual-wan/health-check", "host": ["{{fgt_base_url}}"], "path": ["api", "v2", "monitor", "virtual-wan", "health-check"] }, "description": "Latency/jitter/loss per WAN member — per-site WAN quality panel." }
-        },
-        {
-          "name": "Managed FortiSwitches (FortiLink)",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{fgt_base_url}}/api/v2/monitor/switch-controller/managed-switch?poe=true&port_stats=true",
-              "host": ["{{fgt_base_url}}"],
-              "path": ["api", "v2", "monitor", "switch-controller", "managed-switch"],
-              "query": [
-                { "key": "poe", "value": "true" },
-                { "key": "port_stats", "value": "true" }
+              "raw": "{{base_url}}/api/v2/cmdb/system/admin",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v2",
+                "cmdb",
+                "system",
+                "admin"
               ]
             },
-            "description": "If an FS-124F is FortiLink-managed by this FortiGate, this single call returns the switch's port stats + PoE — poll the FortiGate instead of the switch."
+            "description": "Audit admin accounts/profiles per site (passwords are not returned)."
           }
-        },
-        {
-          "name": "Firewall policy hit counts",
-          "request": { "method": "GET", "url": { "raw": "{{fgt_base_url}}/api/v2/monitor/firewall/policy", "host": ["{{fgt_base_url}}"], "path": ["api", "v2", "monitor", "firewall", "policy"] }, "description": "Per-policy bytes/packets — top-policies panel." }
         }
       ]
     }
