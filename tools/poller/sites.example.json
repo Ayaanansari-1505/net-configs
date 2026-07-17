@@ -1,0 +1,15 @@
+{
+  "sites": [
+    {
+      "name": "BR-001",
+      "base_url": "https://10.10.1.2",
+      "api_token": "REPLACE-WITH-REST-API-ADMIN-TOKEN"
+    },
+    {
+      "name": "BR-002",
+      "base_url": "https://10.10.2.2",
+      "username": "api-ro",
+      "password": "REPLACE-session-login-fallback"
+    }
+  ]
+}
